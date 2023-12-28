@@ -1,0 +1,190 @@
+import tkinter as tk
+from tkinter import messagebox
+import mysql.connector
+def insert():
+    name=name_entry.get()
+    employeeid=empid_entry.get()
+    gender=gender_entry.get()
+    address=address_entry.get()
+    emailid=emailid_entry.get()
+    phonenum=phno_entry.get()
+    salary=salary_entry.get()
+    #connection to mysql database
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="employee"
+    )
+  # Create a cursor
+    cursor = db.cursor()
+  # Insert data into the database (change the table name)
+    insert_query = "INSERT INTO emp (name,empid,gender,address,email,phone,salary) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    data = (name,employeeid,gender,address,emailid,phonenum,salary)
+    try:
+        cursor.execute(insert_query, data)
+        db.commit()
+        messagebox.showinfo("Success", "Data saved to MySQL!")
+    except mysql.connector.Error as err:
+        db.rollback()
+        messagebox.showerror("Error", f"Error: {err}")
+    finally:
+        cursor.close()
+        db.close()
+#create the main application window
+app=tk.Tk()
+app.title("INSERT Query in Tkinter")
+
+name_label=tk.Label(app,text="NAME:")
+name_label.pack()
+name_entry=tk.Entry(app)
+name_entry.pack()
+
+empid_label=tk.Label(app,text="EMPID:")
+empid_label.pack()
+empid_entry=tk.Entry(app)
+empid_entry.pack()
+
+gender_label=tk.Label(app,text="GENDER:")
+gender_label.pack()
+gender_entry=tk.Entry(app)
+gender_entry.pack()
+
+address_label=tk.Label(app,text="ADDRESS:")
+address_label.pack()
+address_entry=tk.Entry(app)
+address_entry.pack()
+
+emailid_label=tk.Label(app,text="EMAIL ID:")
+emailid_label.pack()
+emailid_entry=tk.Entry(app)
+emailid_entry.pack()
+
+phno_label=tk.Label(app,text="PHONE NUMBER:")
+phno_label.pack()
+phno_entry=tk.Entry(app)
+phno_entry.pack()
+
+salary_label=tk.Label(app,text="SALARY:")
+salary_label.pack()
+salary_entry=tk.Entry(app)
+salary_entry.pack()
+
+submit_button=tk.Button(app,text="SUBMIT",command=insert)
+submit_button.pack()
+app.mainloop()
+
+
+       
+def update():
+ # Get values from the entry fields
+    update_column = update_column_entry.get()
+    new_value = new_value_entry.get()
+    condition_column = condition_column_entry.get()
+    condition_value = condition_value_entry.get()
+
+    # Connect to the MySQL database (change these credentials)
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="employee"
+    )
+ # Create a cursor
+    cursor = db.cursor()
+# Execute the UPDATE query (change the table name and column names)
+    update_query = f"UPDATE emp SET {update_column} = %s WHERE {condition_column} = %s"
+    data = (new_value, condition_value)
+    try:
+        cursor.execute(update_query, data)
+        db.commit()
+        result_label.config(text="Update successful!")
+    except mysql.connector.Error as err:
+        db.rollback()
+        result_label.config(text=f"Error: {err}")
+    finally:
+        cursor.close()
+        db.close()
+
+# Create the main application window
+app = tk.Tk()
+app.title("UPDATE Query in Tkinter")
+
+# Create and layout components
+update_column_label = tk.Label(app, text="Update Column:")
+update_column_label.pack()
+update_column_entry = tk.Entry(app)
+update_column_entry.pack()
+
+new_value_label = tk.Label(app, text="New Value:")
+new_value_label.pack()
+new_value_entry = tk.Entry(app)
+new_value_entry.pack()
+
+condition_column_label = tk.Label(app, text="Condition Column:")
+condition_column_label.pack()
+condition_column_entry = tk.Entry(app)
+condition_column_entry.pack()
+
+condition_value_label = tk.Label(app, text="Condition Value:")
+condition_value_label.pack()
+condition_value_entry = tk.Entry(app)
+condition_value_entry.pack()
+
+update_button = tk.Button(app, text="Update", command=update)
+update_button.pack()
+
+result_label = tk.Label(app, text="", fg="green")
+result_label.pack()
+#start the application loop
+app.mainloop()
+
+# Function to execute the DELETE query
+def delete():
+    # Get values from the entry fields
+    condition_column = condition_column_entry.get()
+    condition_value = condition_value_entry.get()
+# Connect to the MySQL database (change these credentials)
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="employee"
+    )
+# Create a cursor
+    cursor = db.cursor()
+# Execute the DELETE query (change the table name and column names)
+    delete_query = f"DELETE FROM emp WHERE {condition_column} = %s"
+    data = (condition_value,)
+    try:
+        cursor.execute(delete_query, data)
+        db.commit()
+        result_label.config(text="Delete successful!")
+    except mysql.connector.Error as err:
+        db.rollback()
+        result_label.config(text=f"Error: {err}")
+    finally:
+        cursor.close()
+        db.close()
+# Create the main application window
+app = tk.Tk()
+app.title("DELETE Query in Tkinter")
+
+# Create and layout components
+condition_column_label = tk.Label(app, text="Condition Column:")
+condition_column_label.pack()
+condition_column_entry = tk.Entry(app)
+condition_column_entry.pack()
+
+condition_value_label = tk.Label(app, text="Condition Value:")
+condition_value_label.pack()
+condition_value_entry = tk.Entry(app)
+condition_value_entry.pack()
+
+delete_button = tk.Button(app, text="Delete", command=delete)
+delete_button.pack()
+
+result_label = tk.Label(app, text="", fg="red")
+result_label.pack()
+#start the application loop
+app.mainloop()
